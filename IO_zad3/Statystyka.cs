@@ -7,7 +7,7 @@ namespace WindowsFormsApplication1
 {
     class Statystyka
     {
-        public double srednia(double[] tablica, int n)
+        public double srednia(double[] tablica)
         {
             double suma=0;
             double wynik = 0;
@@ -16,39 +16,39 @@ namespace WindowsFormsApplication1
                 suma += tablica[i];
             }
 
-            wynik = suma / n;
+            wynik = suma / tablica.Length;
             return wynik;
         }
 
-        public double mediana(double[] tablica, int n)
+        public double mediana(double[] tablica)
         {
             Array.Sort(tablica);
-            if (n % 2 == 1)
+            if (tablica.Length % 2 == 1)
             {
-                return tablica[(n + 1) / 2];
+                return tablica[(tablica.Length + 1) / 2];
             }
             else
             {
-                return tablica[n / 2];
+                return tablica[tablica.Length / 2];
             }
         }
 
-        public double odchylenie(double[] tablica, int n)
+        public double odchylenie(double[] tablica)
         {
-            double sr = srednia(tablica, n);
+            double sr = srednia(tablica);
             double suma = 0;
             foreach (int i in tablica)
             {
                 suma = Math.Pow((tablica[i] - sr), 2);
             }
-            double wynik = suma / (n - 1);
+            double wynik = suma / (tablica.Length - 1);
             return Math.Sqrt(wynik);
         }
 
         public double skosnosc(double[] tablica, int n)
         {
             double sk;
-            return sk = 3 * (srednia(tablica, n) - mediana(tablica, n)) / odchylenie(tablica, n);
+            return sk = 3 * (srednia(tablica) - mediana(tablica)) / odchylenie(tablica);
         }
     }
 }
