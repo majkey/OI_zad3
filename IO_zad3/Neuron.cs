@@ -12,7 +12,7 @@ namespace WindowsFormsApplication1
         public Neuron(int rozmiar)
         {
             this.wagi=new double[rozmiar];
-            for (int i = 0; i < wagi.Length; i++)
+            foreach (int i in wagi)
             {
                 Random numer = new Random();
                 wagi[i] = numer.NextDouble();
@@ -27,10 +27,9 @@ namespace WindowsFormsApplication1
 
         public double odleglosc(double[] tablica1)
         {
-            int wymiar = tablica1.Length;
             double sumacalosc = 0;
 
-            for (int i = 0; i < wymiar; i++)
+            foreach (int i in tablica1)
             {
                 sumacalosc += Math.Pow(tablica1[i] - this.wagi[i], 2);
             }
@@ -52,7 +51,7 @@ namespace WindowsFormsApplication1
         {
             double s = sasiedztwo(tablica, wsp_uczenia);
 
-            for (int i = 0; i < this.wagi.Length; i++)
+            foreach (int i in this.wagi)
             {
                 double roznica = this.wagi[i] - tablica[i];
                 this.wagi[i] += roznica * s * wsp_uczenia;
