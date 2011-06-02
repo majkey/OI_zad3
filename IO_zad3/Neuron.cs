@@ -2,17 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace WindowsFormsApplication1
 {
+    [Serializable]
     public class Neuron
     {
-        double[] wagi;
+        [XmlArrayItem(Type = typeof(double))]
+        double[] wagi { get; set; }
+
+        public Neuron()
+        {
+            this.wagi = null;
+        }
 
         public Neuron(int rozmiar)
         {
             this.wagi=new double[rozmiar];
-            foreach (int i in wagi)
+            for (int i = 0; i < wagi.Length; i++ )
             {
                 Random numer = new Random();
                 wagi[i] = numer.NextDouble();
@@ -29,7 +37,7 @@ namespace WindowsFormsApplication1
         {
             double sumacalosc = 0;
 
-            foreach (int i in tablica1)
+            for (int i = 0; i < tablica1.Length; i++)
             {
                 sumacalosc += Math.Pow(tablica1[i] - this.wagi[i], 2);
             }
@@ -51,7 +59,7 @@ namespace WindowsFormsApplication1
         {
             double s = sasiedztwo(tablica, wsp_uczenia);
 
-            foreach (int i in this.wagi)
+            for (int i = 0; i < wagi.Length; i++ )
             {
                 double roznica = this.wagi[i] - tablica[i];
                 this.wagi[i] += roznica * s * wsp_uczenia;

@@ -1,0 +1,9 @@
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\bin\Debug\IO_zad3.exe
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\bin\Debug\IO_zad3.pdb
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\obj\x86\Debug\WindowsFormsApplication1.Form1.resources
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\obj\x86\Debug\WindowsFormsApplication1.Properties.Resources.resources
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\obj\x86\Debug\IO_zad3.exe
+C:\Users\majkey\Desktop\IO_zad3\IO_zad3\obj\x86\Debug\IO_zad3.pdb

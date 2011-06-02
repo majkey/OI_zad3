@@ -7,14 +7,26 @@ using System.Diagnostics;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 
 namespace WindowsFormsApplication1
 {
-    class SOM
+    [Serializable]
+    public class SOM
     {
-        Neuron[] neurony;
-        double wsp_uczenia=0.3;
-        double promien=0.5;
+        [XmlArray("neurony")]
+        public Neuron[] neurony { get; set; }
+        [XmlElement("wspolczynnik_uczenia")]
+        public double wsp_uczenia { get; set; }
+        [XmlElement("promien")]
+        public double promien { get; set; }
+
+        public SOM()
+        {
+            this.neurony = null;
+            this.wsp_uczenia = 0.3;
+            this.promien = 0.5;
+        }
 
         SOM(int n, int nwag)
         {
@@ -22,9 +34,11 @@ namespace WindowsFormsApplication1
             for (int i=0; i<n; i++){
                 this.neurony[i]=new Neuron(nwag);
             }
+            this.wsp_uczenia = 0.3;
+            this.promien = 0.5;
         }
 
-        SOM(int n, int nwag, double wu, double r)
+        public SOM(int n, int nwag, double wu, double r)
         {
             this.neurony = new Neuron[n];
             for (int i = 0; i < n; i++)
@@ -35,10 +49,11 @@ namespace WindowsFormsApplication1
             this.promien = r;
         }
 
-        void uczsiec(double [][] dane, int epoki)
+        public void uczsiec(double [][] dane, int epoki, System.Windows.Forms.ToolStripProgressBar pb)
         {
             for (int h = 0; h < epoki; h++)
             {
+                pb.Value++;
                 for (int i = 0; i < dane.Length; i++)
                 {
                     for (int j = 0; j < this.neurony.Length; j++)
@@ -65,46 +80,36 @@ namespace WindowsFormsApplication1
             return rezultat;
         }
 
-        void zapiszsiec(string nazwapliku)
+        public void zapiszsiec(string nazwapliku)
         {
-            Stream stream = null;
-            try
-            {
-                IFormatter formatter = new BinaryFormatter();
-                stream = new FileStream(nazwapliku, FileMode.Create, FileAccess.Write, FileShare.None);
-                formatter.Serialize(stream, this);
-            }
-            catch
-            {
-                // do nothing, just ignore any possible errors
-            }
-            finally
-            {
-                if (null != stream)
-                    stream.Close();
-            }
+            string lines = SerializeToXml();
+            System.IO.StreamWriter file = new System.IO.StreamWriter(nazwapliku);
+            file.WriteLine(lines);
+            file.Close();
         }
 
         public static SOM wczytajsiec(string nazwapliku)
         {
-            Stream stream = null;
-            SOM siec = null;
-            try
-            {
-                IFormatter formatter = new BinaryFormatter();
-                stream = new FileStream(nazwapliku, FileMode.Open, FileAccess.Read, FileShare.None);
-                siec = (SOM)formatter.Deserialize(stream);
-            }
-            catch
-            {
-                // do nothing, just ignore any possible errors
-            }
-            finally
-            {
-                if (null != stream)
-                    stream.Close();
-            }
-            return siec;
+            TextReader tr = new StreamReader(nazwapliku);
+            SOM som = DeserializeFromXml(tr.ReadToEnd());
+            tr.Close();
+            return som;
+        }
+
+        string SerializeToXml()
+        {
+            StringWriter writer = new StringWriter();
+            XmlSerializer serializer = new XmlSerializer(typeof(SOM));
+            serializer.Serialize(writer, this);
+            return writer.ToString();
+        }
+
+        static SOM DeserializeFromXml(string s)
+        {
+            StringReader reader = new StringReader(s);
+            XmlSerializer serializer = new XmlSerializer(typeof(SOM));
+            SOM som = (SOM)serializer.Deserialize(reader);
+            return som;
         }
     }
 }
