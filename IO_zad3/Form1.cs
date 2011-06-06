@@ -27,6 +27,10 @@ namespace WindowsFormsApplication1
             this.label8.Text = "";
             this.label9.Text = "";
             this.label15.Text = "";
+            this.label20.Text = "";
+            this.label21.Text = "";
+            this.label22.Text = "";
+            this.label23.Text = "";
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -40,13 +44,13 @@ namespace WindowsFormsApplication1
 
                 CSV csv_file = new CSV(this.file_name);
                 ArrayList collection = csv_file.GetCollection();
-                this.toolStripProgressBar1.Maximum = collection.Count + ((String[])collection[0]).Length;
+                this.toolStripProgressBar1.Maximum = collection.Count;
 
                 String[] first_row = (String[])collection[0];
                 for (int i = 0; i < first_row.Length; i++)
                 {
-                    if (i != 0)
-                        this.listBox1.Items.Add(first_row[i]);
+                    this.listBox1.Items.Add(first_row[i]);
+                    this.listBox2.Items.Add(first_row[i]);
                     dataGridView1.Columns.Add((String)first_row[i], (String)first_row[i]);
                 }
 
@@ -64,25 +68,6 @@ namespace WindowsFormsApplication1
                 this.label8.Text = (first_row.Length - 1).ToString();
                 this.label9.Text = fInfo.Attributes.ToString();
 
-                for (int i = 1; i < this.dataGridView1.Columns.Count; i++)
-                {
-                    double[] array = new double[this.dataGridView1.Rows.Count];
-                    this.toolStripProgressBar1.Value++;
-                    for (int j = 0; j < this.dataGridView1.Rows.Count; j++)
-                    {
-                        String tmp = this.dataGridView1.Rows[j].Cells[i].FormattedValue.ToString();
-                        if (tmp == "")
-                            tmp = "0,0";
-                        array[j] = Double.Parse(tmp, CultureInfo.InvariantCulture);
-                    }
-                    String[] row = new String[5];
-                    row[0] = first_row[i];
-                    row[1] = Statystyka.srednia(array).ToString();
-                    row[2] = Statystyka.mediana(array).ToString();
-                    row[3] = Statystyka.odchylenie(array).ToString();
-                    row[4] = Statystyka.skosnosc(array).ToString();
-                    this.dataGridView2.Rows.Add(row);
-                }
                 this.toolStripProgressBar1.Enabled = false;
                 this.toolStripProgressBar1.Value = 0;
                 this.Cursor = Cursors.Default;
@@ -110,22 +95,17 @@ namespace WindowsFormsApplication1
             // przygotowywanie danych
             this.Cursor = Cursors.WaitCursor;
             this.toolStripProgressBar1.Enabled = true;
-            this.toolStripProgressBar1.Maximum = this.dataGridView1.Rows.Count + (int)this.numericUpDown2.Value;
+            this.toolStripProgressBar1.Maximum = (int)this.numericUpDown2.Value;
             this.label15.Text = "Przygotowywanie danych...";
 
             double[][] array = new double[this.dataGridView1.Rows.Count][];
             for (int i = 0; i < this.dataGridView1.Rows.Count; i++)
             {
-                array[i] = new double[this.listBox1.SelectedItems.Count];
-                this.toolStripProgressBar1.Value++;
-                int l = 0;
-                foreach (int j in this.listBox1.SelectedIndices)
+                array[i] = new double[this.listBox1.SelectedIndices.Count];
+                for (int j = 0; j < this.listBox1.SelectedIndices.Count; j++ )
                 {
-                    String tmp = this.dataGridView1.Rows[i].Cells[j + 1].FormattedValue.ToString();
-                    if (tmp == "")
-                        tmp = "0.0";
-                    array[i][l] = Double.Parse(tmp, CultureInfo.InvariantCulture);
-                    l++;
+                    String tmp = this.dataGridView1.Rows[i].Cells[this.listBox1.SelectedIndices[j]].FormattedValue.ToString().Replace('.',',');
+                    array[i][j] = double.Parse(tmp);
                 }
             }
 
@@ -155,6 +135,46 @@ namespace WindowsFormsApplication1
             if (result == DialogResult.OK)
             {
                 this.som.zapiszsiec(this.saveFileDialog1.FileName);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.Cursor = Cursors.WaitCursor;
+
+            double [] array = new double[this.listBox2.SelectedIndices.Count];
+            for (int i = 0; i < this.listBox2.SelectedIndices.Count; i++ )
+                array[i] = double.Parse(this.dataGridView1.SelectedRows[0].Cells[this.listBox2.SelectedIndices[i]].FormattedValue.ToString().Replace('.', ','));
+
+            this.label20.Text = Statystyka.srednia(array).ToString();
+            this.label21.Text = Statystyka.mediana(array).ToString();
+            this.label22.Text = Statystyka.odchylenie(array).ToString();
+            this.label23.Text = Statystyka.skosnosc(array).ToString();
+
+            this.Cursor = Cursors.Default;
+        }
+
+        private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.listBox2.SelectedItems.Count > 0 && this.dataGridView1.SelectedRows.Count > 0)
+            {
+                this.button2.Enabled = true;
+            }
+            else
+            {
+                this.button2.Enabled = false;
+            }
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (this.listBox2.SelectedItems.Count > 0 && this.dataGridView1.SelectedRows.Count > 0)
+            {
+                this.button2.Enabled = true;
+            }
+            else
+            {
+                this.button2.Enabled = false;
             }
         }
     }

@@ -65,7 +65,7 @@ namespace WindowsFormsApplication1
             }
         }
 
-        Neuron zwyciezca(double [] dane)
+        public Neuron zwyciezca(double [] dane)
         {
             Neuron rezultat = this.neurony[0];
 

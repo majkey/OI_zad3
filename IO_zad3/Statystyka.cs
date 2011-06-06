@@ -23,14 +23,19 @@ namespace WindowsFormsApplication1
         public static double mediana(double[] tablica)
         {
             Array.Sort(tablica);
-            if (tablica.Length % 2 == 1)
+            if (tablica.Length > 0)
             {
-                return tablica[(tablica.Length + 1) / 2];
+                if (tablica.Length % 2 == 1)
+                {
+                    return tablica[(tablica.Length + 1) / 2];
+                }
+                else
+                {
+                    return tablica[tablica.Length / 2];
+                }
             }
             else
-            {
-                return tablica[tablica.Length / 2];
-            }
+                return 0.0;
         }
 
         public static double odchylenie(double[] tablica)
