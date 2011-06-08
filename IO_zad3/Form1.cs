@@ -26,7 +26,6 @@ namespace WindowsFormsApplication1
             this.label7.Text = "";
             this.label8.Text = "";
             this.label9.Text = "";
-            this.label15.Text = "";
             this.label20.Text = "";
             this.label21.Text = "";
             this.label22.Text = "";
@@ -96,7 +95,6 @@ namespace WindowsFormsApplication1
             this.Cursor = Cursors.WaitCursor;
             this.toolStripProgressBar1.Enabled = true;
             this.toolStripProgressBar1.Maximum = (int)this.numericUpDown2.Value;
-            this.label15.Text = "Przygotowywanie danych...";
 
             double[][] array = new double[this.dataGridView1.Rows.Count][];
             for (int i = 0; i < this.dataGridView1.Rows.Count; i++)
@@ -105,6 +103,8 @@ namespace WindowsFormsApplication1
                 for (int j = 0; j < this.listBox1.SelectedIndices.Count; j++ )
                 {
                     String tmp = this.dataGridView1.Rows[i].Cells[this.listBox1.SelectedIndices[j]].FormattedValue.ToString().Replace('.',',');
+                    if(tmp == "")
+                        tmp = "0,0";
                     array[i][j] = double.Parse(tmp);
                 }
             }
@@ -113,11 +113,10 @@ namespace WindowsFormsApplication1
             this.som = new SOM((int)this.numericUpDown1.Value, (int)this.listBox1.SelectedItems.Count, double.Parse(this.textBox1.Text, CultureInfo.InvariantCulture), double.Parse(this.textBox2.Text, CultureInfo.InvariantCulture));
 
             // uczenie sieci
-            this.label15.Text = "Uczenie sieci...";
             this.som.uczsiec(array, (int)this.numericUpDown2.Value, this.toolStripProgressBar1);
 
             // sprzątanie
-            this.label15.Text = "Sieć nauczona!";
+            this.richTextBox1.Text = this.som.ToString();
             this.toolStripProgressBar1.Value = 0;
             this.toolStripProgressBar1.Enabled = false;
             this.Cursor = Cursors.Default;

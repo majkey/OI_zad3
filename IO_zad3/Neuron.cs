@@ -6,25 +6,20 @@ using System.Xml.Serialization;
 
 namespace WindowsFormsApplication1
 {
-    [Serializable]
     public class Neuron
     {
-        [XmlArrayItem(Type = typeof(double))]
-        double[] wagi { get; set; }
+        public double[] wagi { get; set; }
 
         public Neuron()
         {
             this.wagi = null;
         }
 
-        public Neuron(int rozmiar)
+        public Neuron(int rozmiar, Random seed)
         {
-            this.wagi=new double[rozmiar];
+            this.wagi = new double[rozmiar];
             for (int i = 0; i < wagi.Length; i++ )
-            {
-                Random numer = new Random();
-                wagi[i] = numer.NextDouble();
-            }
+                wagi[i] = seed.NextDouble();
         }
 
         public Neuron(double[] tablica)

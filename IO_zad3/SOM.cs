@@ -11,14 +11,10 @@ using System.Xml.Serialization;
 
 namespace WindowsFormsApplication1
 {
-    [Serializable]
     public class SOM
     {
-        [XmlArray("neurony")]
         public Neuron[] neurony { get; set; }
-        [XmlElement("wspolczynnik_uczenia")]
         public double wsp_uczenia { get; set; }
-        [XmlElement("promien")]
         public double promien { get; set; }
 
         public SOM()
@@ -31,9 +27,9 @@ namespace WindowsFormsApplication1
         SOM(int n, int nwag)
         {
             this.neurony = new Neuron[n];
-            for (int i=0; i<n; i++){
-                this.neurony[i]=new Neuron(nwag);
-            }
+            Random seed = new Random();
+            for (int i=0; i<n; i++)
+                this.neurony[i]=new Neuron(nwag, seed);
             this.wsp_uczenia = 0.3;
             this.promien = 0.5;
         }
@@ -41,12 +37,30 @@ namespace WindowsFormsApplication1
         public SOM(int n, int nwag, double wu, double r)
         {
             this.neurony = new Neuron[n];
+            Random seed = new Random();
             for (int i = 0; i < n; i++)
-            {
-                this.neurony[i] = new Neuron(nwag);
-            }
+                this.neurony[i] = new Neuron(nwag, seed);
             this.wsp_uczenia = wu;
             this.promien = r;
+        }
+
+        public string ToString()
+        {
+            string result = "Sieć SOM:\n";
+            result += "\tWspółczynnik uczenia: " + this.wsp_uczenia.ToString() + "\n";
+            result += "\tPromień sąsiedztwa: " + this.promien.ToString() + "\n";
+            result += "\tNeurony:\n";
+            int k = 0;
+            foreach (Neuron n in this.neurony)
+            {
+                k++;
+                result += "\t\tNeuron " + k.ToString() + "\n";
+                foreach (double v in n.wagi)
+                {
+                    result += "\t\t\t" + v.ToString() + "\n";
+                }
+            }
+            return result;
         }
 
         public void uczsiec(double [][] dane, int epoki, System.Windows.Forms.ToolStripProgressBar pb)
