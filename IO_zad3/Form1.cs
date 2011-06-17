@@ -193,7 +193,7 @@ namespace WindowsFormsApplication1
                         s = "0,0";
                     tab[j] = double.Parse(s);
                 }
-                if (this.som.zwyciezca_index(tab) == pos)
+                if (tab != null && this.som.zwyciezca_index(tab) == pos)
                     stat++;
                 int color = this.som.zwyciezca_index(tab) * 255 / (int)this.numericUpDown1.Value;
                 for (int j = 0; j < this.dataGridView1.ColumnCount; j++)
