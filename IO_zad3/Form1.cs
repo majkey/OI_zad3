@@ -30,6 +30,9 @@ namespace WindowsFormsApplication1
             this.label21.Text = "";
             this.label22.Text = "";
             this.label23.Text = "";
+            this.label25.Text = "";
+            this.label24.Text = "";
+            this.label26.Text = "";
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
@@ -50,6 +53,7 @@ namespace WindowsFormsApplication1
                 {
                     this.listBox1.Items.Add(first_row[i]);
                     this.listBox2.Items.Add(first_row[i]);
+                    this.listBox3.Items.Add(first_row[i]);
                     dataGridView1.Columns.Add((String)first_row[i], (String)first_row[i]);
                 }
 
@@ -95,8 +99,12 @@ namespace WindowsFormsApplication1
             this.Cursor = Cursors.WaitCursor;
             this.toolStripProgressBar1.Enabled = true;
             this.toolStripProgressBar1.Maximum = (int)this.numericUpDown2.Value;
+            double [][] array;
 
-            double[][] array = new double[this.dataGridView1.Rows.Count][];
+            if (this.listBox1.SelectedIndices.Count == this.listBox3.SelectedIndices.Count)
+                array = new double[this.dataGridView1.Rows.Count * 2][];
+            else
+                array = new double[this.dataGridView1.Rows.Count][];
             for (int i = 0; i < this.dataGridView1.Rows.Count; i++)
             {
                 array[i] = new double[this.listBox1.SelectedIndices.Count];
@@ -106,6 +114,21 @@ namespace WindowsFormsApplication1
                     if(tmp == "")
                         tmp = "0,0";
                     array[i][j] = double.Parse(tmp);
+                }
+            }
+
+            if (this.listBox1.SelectedIndices.Count == this.listBox3.SelectedIndices.Count)
+            {
+                for (int i = this.dataGridView1.Rows.Count; i < this.dataGridView1.Rows.Count * 2; i++)
+                {
+                    array[i] = new double[this.listBox3.SelectedIndices.Count];
+                    for (int j = 0; j < this.listBox3.SelectedIndices.Count; j++)
+                    {
+                        String tmp = this.dataGridView1.Rows[i - this.dataGridView1.Rows.Count].Cells[this.listBox3.SelectedIndices[j]].FormattedValue.ToString().Replace('.', ',');
+                        if (tmp == "")
+                            tmp = "0,0";
+                        array[i][j] = double.Parse(tmp);
+                    }
                 }
             }
 
@@ -149,6 +172,40 @@ namespace WindowsFormsApplication1
             this.label21.Text = Statystyka.mediana(array).ToString();
             this.label22.Text = Statystyka.odchylenie(array).ToString();
             this.label23.Text = Statystyka.skosnosc(array).ToString();
+            int pos = 0;
+
+            if (this.som != null && this.som.neurony[0].wagi.Length == array.Length)
+            {
+                Neuron winner = this.som.zwyciezca(array);
+                pos = this.som.zwyciezca_index(array);
+                this.label24.Text = "Neuron nr: " + (pos + 1).ToString();
+                this.label25.Text = "Odległość: " + winner.odleglosc(array).ToString();
+            }
+
+            int stat = 0;
+            for (int i = 0; i < this.dataGridView1.RowCount; i++ )
+            {
+                double[] tab = new double[this.listBox2.SelectedIndices.Count];
+                for (int j = 0; j < this.listBox2.SelectedIndices.Count; j++)
+                {
+                    string s = this.dataGridView1.Rows[i].Cells[this.listBox2.SelectedIndices[j]].FormattedValue.ToString().Replace('.', ',');
+                    if (s == "")
+                        s = "0,0";
+                    tab[j] = double.Parse(s);
+                }
+                if (this.som.zwyciezca_index(tab) == pos)
+                    stat++;
+                int color = this.som.zwyciezca_index(tab) * 255 / (int)this.numericUpDown1.Value;
+                for (int j = 0; j < this.dataGridView1.ColumnCount; j++)
+                {
+                    this.dataGridView1.Rows[i].Cells[j].Style.BackColor = Color.FromArgb(color, color, color);
+                    if(color < 130)
+                        this.dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.White;
+                    else
+                        this.dataGridView1.Rows[i].Cells[j].Style.ForeColor = Color.Black;
+                }
+            }
+            this.label26.Text = "Wraz z " + stat.ToString() + " danymi.";
 
             this.Cursor = Cursors.Default;
         }
@@ -175,6 +232,32 @@ namespace WindowsFormsApplication1
             {
                 this.button2.Enabled = false;
             }
+        }
+
+        private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.listBox3.SelectedIndices.Count > 0)
+                this.button1.Enabled = true;
+            else
+                this.button1.Enabled = false;
+        }
+
+        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            if (this.listBox1.SelectedIndices.Count > 0)
+                this.button1.Enabled = true;
+            else
+                this.button1.Enabled = false;
+        }
+
+        double odleglosc(double[] t1, double[] t2)
+        {
+            double result = 0.0;
+            for (int i = 0; i < t1.Length; i++)
+            {
+                result += Math.Pow(t1[i] - t2[i], 2);
+            }
+            return result;
         }
     }
 }

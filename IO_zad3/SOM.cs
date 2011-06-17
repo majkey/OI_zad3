@@ -63,8 +63,15 @@ namespace WindowsFormsApplication1
             return result;
         }
 
+        double promien_sasiedztwa(double p0, int epoka)
+        {
+            return p0 / (epoka + 1);
+        }
+
         public void uczsiec(double [][] dane, int epoki, System.Windows.Forms.ToolStripProgressBar pb)
         {
+            for (int i = 0; i < this.neurony.Length; i++)
+                this.neurony[i].wagi = dane[dane.Length / (i + 1) % dane.Length];
             for (int h = 0; h < epoki; h++)
             {
                 pb.Value++;
@@ -72,7 +79,8 @@ namespace WindowsFormsApplication1
                 {
                     for (int j = 0; j < this.neurony.Length; j++)
                     {
-                        this.neurony[j].ucz(this.wsp_uczenia, dane[i]);
+                        if(dane[i] != null)
+                            this.neurony[j].ucz(this.wsp_uczenia, promien_sasiedztwa(this.promien, i), dane[i]);
                     }
 
                 }
@@ -82,7 +90,6 @@ namespace WindowsFormsApplication1
         public Neuron zwyciezca(double [] dane)
         {
             Neuron rezultat = this.neurony[0];
-
             for (int i = 0; i < neurony.Length; i++)
             {
                 if (neurony[i].odleglosc(dane) < rezultat.odleglosc(dane))
@@ -90,7 +97,19 @@ namespace WindowsFormsApplication1
                     rezultat = neurony[i];
                 }
             }
+            return rezultat;
+        }
 
+        public int zwyciezca_index(double[] dane)
+        {
+            int rezultat = 0;
+            for (int i = 0; i < neurony.Length; i++)
+            {
+                if (neurony[i].odleglosc(dane) < neurony[rezultat].odleglosc(dane))
+                {
+                    rezultat = i;
+                }
+            }
             return rezultat;
         }
 

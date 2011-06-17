@@ -18,8 +18,9 @@ namespace WindowsFormsApplication1
         public Neuron(int rozmiar, Random seed)
         {
             this.wagi = new double[rozmiar];
+            double val = seed.NextDouble();
             for (int i = 0; i < wagi.Length; i++ )
-                wagi[i] = seed.NextDouble();
+                wagi[i] = val;
         }
 
         public Neuron(double[] tablica)
@@ -50,13 +51,13 @@ namespace WindowsFormsApplication1
             return rezultat;
         }
 
-        public double ucz(double wsp_uczenia, double[] tablica)
+        public double ucz(double wsp_uczenia, double promien, double[] tablica)
         {
-            double s = sasiedztwo(tablica, wsp_uczenia);
+            double s = sasiedztwo(tablica, promien);
 
             for (int i = 0; i < wagi.Length; i++ )
             {
-                double roznica = this.wagi[i] - tablica[i];
+                double roznica = tablica[i] - this.wagi[i];
                 this.wagi[i] += roznica * s * wsp_uczenia;
             }
             return odleglosc(tablica);
